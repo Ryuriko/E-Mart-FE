@@ -1,7 +1,14 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:e_mart_fe/pages/add.dart';
+import 'package:e_mart_fe/pages/auth/login.dart';
 import 'package:e_mart_fe/pages/detail_page.dart';
+import 'package:e_mart_fe/pages/edit.dart';
 import 'package:e_mart_fe/pages/home_page.dart';
-import 'package:e_mart_fe/providers/product.dart';
+import 'package:e_mart_fe/pages/profile/profile.dart';
+// import 'package:e_mart_fe/pages/try.dart';
+import 'package:e_mart_fe/pages/user/checkout.dart';
+import 'package:e_mart_fe/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,25 +21,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // theme: ThemeData(
-      //   textTheme: TextTheme(
-      //     bodyMedium: TextStyle(
-      //         // fontStyle: google
-      //         ),
-      //   ),
-      // ),
-      routes: {
-        HomePage.routeName: (context) => HomePage(),
-        DetailPage.routeName: (context) => DetailPage(),
-        AddPage.routeName: (context) => AddPage(),
-      },
-      home: ChangeNotifierProvider(
-        create: (context) {
-          return HttpProvider();
+    return ChangeNotifierProvider(
+      create: (context) => ProductProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        // theme: ThemeData(
+        //   textTheme: TextTheme(
+        //     bodyMedium: TextStyle(
+        //         // fontStyle: google
+        //         ),
+        //   ),
+        // ),
+        routes: {
+          HomePage.routeName: (context) => HomePage(),
+          DetailPage.routeName: (context) => DetailPage(),
+          AddPage.routeName: (context) => AddPage(),
+          LoginPage.routeName: (context) => LoginPage(),
+          ProfilePage.routeName: (context) => ProfilePage(),
+          CheckoutPage.routeName: (context) => CheckoutPage(),
+          Edit.routeName: (context) => Edit(),
         },
-        child: HomePage(),
+        home: HomePage(),
       ),
     );
   }

@@ -1,59 +1,86 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:e_mart_fe/pages/home_page.dart';
+import 'dart:convert';
+
+import 'package:e_mart_fe/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AddPage extends StatelessWidget {
-  const AddPage({super.key});
-  static const routeName = '/add';
-  final String token = "2|N7xnYHRw2yZeJLiK99Wm3OzH0jpZmhS2rRPh3MyKf04b475f";
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+  static const routeName = '/profile';
 
-  addData(context, String name, String stock, String desc, String price) async {
-    http.Response response = await http.post(
-      Uri.parse("http://master-api.my.id/api/product"),
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final String token = "2|N7xnYHRw2yZeJLiK99Wm3OzH0jpZmhS2rRPh3MyKf04b475f";
+  Map _newList = {};
+  Map get data => _newList;
+  late final User user;
+
+  getData() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse("http://master-api.my.id/api/profile"),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token'
+        },
+      );
+      // print(response.body);
+      setState(() {
+        _newList = jsonDecode(response.body)['data'];
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  updateData(context, String name, String email) async {
+    http.Response response = await http.patch(
+      Uri.parse("http://master-api.my.id/api/profile"),
       headers: {
         'Authorization': 'Bearer $token',
       },
       body: {
-        "user_id": "eff5a1ed-491d-4a26-913b-f5fce3002b8c",
-        "category_id": "9cbc9e68-8bdb-4c93-a235-8ed90c53ef83",
         "name": name,
-        "stock": stock,
-        "desc": desc,
-        "price": price,
+        "email": email,
       },
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Data berhasil ditambahkan"),
-          duration: Duration(milliseconds: 800),
+          content: Text("Berhasil update profile"),
+          duration: Duration(milliseconds: 1000),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Data gagal ditambahkan"),
-          duration: Duration(milliseconds: 850),
+          content: Text("Gagal update profile"),
+          duration: Duration(milliseconds: 1000),
         ),
       );
     }
+  }
 
-    await Future.delayed(Duration(milliseconds: 800));
-    Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+  @override
+  void initState() {
+    getData();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final TextEditingController name = TextEditingController();
-    final TextEditingController stock = TextEditingController();
-    final TextEditingController price = TextEditingController();
-    final TextEditingController desc = TextEditingController();
+    final TextEditingController email = TextEditingController();
+    final TextEditingController auth = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product'),
+        title: const Text("Profile"),
       ),
       body: Center(
         child: Padding(
@@ -61,18 +88,18 @@ class AddPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "Form Add Product",
-                style: TextStyle(
-                  fontSize: 45,
-                  fontWeight: FontWeight.bold,
+              CircleAvatar(
+                backgroundColor: Colors.green,
+                radius: 60,
+                backgroundImage: NetworkImage(
+                  "http://master-api.my.id/storage/images/profile/${data['picture']}",
                 ),
               ),
               SizedBox(height: 80),
               TextField(
-                controller: name,
+                controller: name..text = data['name'],
                 decoration: InputDecoration(
-                  label: Text("Product Name"),
+                  label: Text("Name"),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide(color: Colors.grey),
@@ -84,9 +111,9 @@ class AddPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
-                controller: stock,
+                controller: email..text = data['email'],
                 decoration: InputDecoration(
-                  label: Text("Stock"),
+                  label: Text("Email"),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide(color: Colors.grey),
@@ -98,10 +125,10 @@ class AddPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
-                controller: price,
+                controller: auth..text = data['auth'],
+                readOnly: true,
                 decoration: InputDecoration(
-                  prefixText: "Rp. ",
-                  label: Text("Price"),
+                  label: Text("User type"),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide(color: Colors.grey),
@@ -112,32 +139,14 @@ class AddPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              TextField(
-                controller: desc,
-                decoration: InputDecoration(
-                  label: Text("Description"),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-              ),
               SizedBox(height: 20),
               OutlinedButton(
                 onPressed: () {
-                  addData(
-                    context,
-                    name.text,
-                    stock.text,
-                    desc.text,
-                    price.text,
-                  );
+                  updateData(context, name.text, email.text);
                 },
-                child: Text("Add data"),
+                child: Text("Update"),
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),

@@ -4,14 +4,15 @@ import 'package:e_mart_fe/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AddPage extends StatelessWidget {
-  const AddPage({super.key});
-  static const routeName = '/add';
+class Edit extends StatelessWidget {
+  const Edit({super.key});
+  static const routeName = '/edit';
   final String token = "2|N7xnYHRw2yZeJLiK99Wm3OzH0jpZmhS2rRPh3MyKf04b475f";
 
-  addData(context, String name, String stock, String desc, String price) async {
-    http.Response response = await http.post(
-      Uri.parse("http://master-api.my.id/api/product"),
+  updateData(context, String id, String name, String stock, String desc,
+      String price) async {
+    http.Response response = await http.patch(
+      Uri.parse("http://master-api.my.id/api/product/$id"),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -25,7 +26,7 @@ class AddPage extends StatelessWidget {
       },
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Data berhasil ditambahkan"),
@@ -51,6 +52,7 @@ class AddPage extends StatelessWidget {
     final TextEditingController stock = TextEditingController();
     final TextEditingController price = TextEditingController();
     final TextEditingController desc = TextEditingController();
+    Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Product'),
@@ -62,7 +64,7 @@ class AddPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Form Add Product",
+                "Form Edit Product",
                 style: TextStyle(
                   fontSize: 45,
                   fontWeight: FontWeight.bold,
@@ -70,7 +72,7 @@ class AddPage extends StatelessWidget {
               ),
               SizedBox(height: 80),
               TextField(
-                controller: name,
+                controller: name..text = arguments['name'],
                 decoration: InputDecoration(
                   label: Text("Product Name"),
                   enabledBorder: OutlineInputBorder(
@@ -84,7 +86,7 @@ class AddPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
-                controller: stock,
+                controller: stock..text = arguments['stock'],
                 decoration: InputDecoration(
                   label: Text("Stock"),
                   enabledBorder: OutlineInputBorder(
@@ -98,10 +100,10 @@ class AddPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
-                controller: price,
+                controller: price..text = arguments['price'],
                 decoration: InputDecoration(
-                  prefixText: "Rp. ",
                   label: Text("Price"),
+                  prefixText: "Rp. ",
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide(color: Colors.grey),
@@ -113,7 +115,7 @@ class AddPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
-                controller: desc,
+                controller: desc..text = arguments['desc'],
                 decoration: InputDecoration(
                   label: Text("Description"),
                   enabledBorder: OutlineInputBorder(
@@ -128,8 +130,9 @@ class AddPage extends StatelessWidget {
               SizedBox(height: 20),
               OutlinedButton(
                 onPressed: () {
-                  addData(
+                  updateData(
                     context,
+                    arguments['id'],
                     name.text,
                     stock.text,
                     desc.text,

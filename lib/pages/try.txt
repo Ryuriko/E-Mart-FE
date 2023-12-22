@@ -4,12 +4,12 @@ import 'package:e_mart_fe/providers/product.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Try extends StatelessWidget {
+  const Try({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<HttpProvider>(context);
+    final provider = Provider.of<Product>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("E-Mart"),
@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
           children: [
             OutlinedButton(
               onPressed: () {
-                provider.get(context, "get");
+                provider.get("get");
                 print(provider.data);
               },
               child: const Text("Get Data"),
