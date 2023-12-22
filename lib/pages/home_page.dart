@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Text(
-                  "Welcome, Yohan store",
+                  "Welcome, Admin!",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

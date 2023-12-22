@@ -85,6 +85,7 @@ class AddPage extends StatelessWidget {
               SizedBox(height: 20),
               TextField(
                 controller: stock,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   label: Text("Stock"),
                   enabledBorder: OutlineInputBorder(
@@ -99,6 +100,7 @@ class AddPage extends StatelessWidget {
               SizedBox(height: 20),
               TextField(
                 controller: price,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   prefixText: "Rp. ",
                   label: Text("Price"),
