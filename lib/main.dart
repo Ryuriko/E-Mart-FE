@@ -2,6 +2,7 @@
 
 import 'package:e_mart_fe/pages/add.dart';
 import 'package:e_mart_fe/pages/auth/login.dart';
+import 'package:e_mart_fe/pages/auth/register.dart';
 import 'package:e_mart_fe/pages/detail_page.dart';
 import 'package:e_mart_fe/pages/edit.dart';
 import 'package:e_mart_fe/pages/home_page.dart';
@@ -34,9 +35,10 @@ class MyApp extends StatelessWidget {
         // ),
         routes: {
           HomePage.routeName: (context) => HomePage(),
+          LoginPage.routeName: (context) => LoginPage(),
+          RegsiterPage.routeName: (context) => RegsiterPage(),
           DetailPage.routeName: (context) => DetailPage(),
           AddPage.routeName: (context) => AddPage(),
-          LoginPage.routeName: (context) => LoginPage(),
           ProfilePage.routeName: (context) => ProfilePage(),
           CheckoutPage.routeName: (context) => CheckoutPage(),
           Edit.routeName: (context) => Edit(),

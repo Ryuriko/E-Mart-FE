@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:e_mart_fe/models/product.dart';
 import 'package:e_mart_fe/pages/add.dart';
+import 'package:e_mart_fe/pages/auth/login.dart';
 import 'package:e_mart_fe/pages/detail_page.dart';
 import 'package:e_mart_fe/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("E-Mart"),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(LoginPage.routeName);
+            },
+            icon: Icon(Icons.person),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 5),
             child: IconButton(

@@ -1,20 +1,21 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
 
-import 'package:e_mart_fe/pages/auth/register.dart';
-import 'package:e_mart_fe/pages/home_page.dart';
+import 'package:e_mart_fe/pages/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-  static const routeName = '/login';
+class RegsiterPage extends StatelessWidget {
+  const RegsiterPage({super.key});
+  static const routeName = '/register';
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController name = TextEditingController();
     final TextEditingController email = TextEditingController();
     final TextEditingController password = TextEditingController();
+    final TextEditingController passwordConfirmation = TextEditingController();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -30,10 +31,24 @@ class LoginPage extends StatelessWidget {
               children: [
                 Image(
                   image: NetworkImage(
-                      'https://cdn.pixabay.com/photo/2021/11/01/13/17/login-6760338_1280.png'),
-                  width: 100,
+                      'https://cdn.pixabay.com/photo/2016/08/29/09/22/register-1627729_1280.png'),
+                  width: 200,
                 ),
-                SizedBox(height: 50),
+                SizedBox(height: 0),
+                TextField(
+                  controller: name,
+                  decoration: InputDecoration(
+                    label: Text("Name"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
                 TextField(
                   controller: email,
                   decoration: InputDecoration(
@@ -63,25 +78,46 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
+                TextField(
+                  controller: passwordConfirmation,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    label: Text("Password Confirmation"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
                 Row(
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        login(context, email.text, password.text);
+                        register(
+                          context,
+                          name.text,
+                          email.text,
+                          password.text,
+                          passwordConfirmation.text,
+                        );
                       },
                       child: Text(
-                        'Login',
+                        'Register',
                         style: TextStyle(
+                          fontSize: 20,
                           color: Colors.black,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushNamed(RegsiterPage.routeName);
+                        Navigator.of(context).pushNamed(LoginPage.routeName);
                       },
-                      child: Text('Register'),
+                      child: Text('Login'),
                     ),
                   ],
                 ),
@@ -94,31 +130,29 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-login(context, String email, String password) async {
+register(context, String name, String email, String password,
+    String passwordConfirmation) async {
   http.Response response = await http.post(
-    Uri.parse('http://master-api.my.id/api/login'),
+    Uri.parse('http://master-api.my.id/api/register'),
     body: {
+      'name': name,
       'email': email,
       'password': password,
+      'password_confirmation': passwordConfirmation,
     },
   );
 
-  Map data = jsonDecode(response.body);
-
-  if (response.statusCode == 200) {
+  if (response.statusCode == 201) {
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text('Berhasil Login'),
+          title: Text('Berhasil mendaftar, silahkan lanjutkan login'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed(
-                  HomePage.routeName,
-                  arguments: {
-                    'token': data['personal_token'],
-                  },
+                  LoginPage.routeName,
                 );
               },
               child: Text('oke'),
@@ -129,11 +163,12 @@ login(context, String email, String password) async {
     );
     print('oke');
   } else {
+    print(response.body);
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text('Credential tidak ditemukan'),
+          title: Text('Gagal mendaftar, periksa kembali data anda'),
           actions: [
             TextButton(
               onPressed: () {
