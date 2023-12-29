@@ -29,14 +29,14 @@ class Edit extends StatelessWidget {
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Data berhasil ditambahkan"),
+          content: Text("Data berhasil diupdate"),
           duration: Duration(milliseconds: 800),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Data gagal ditambahkan"),
+          content: Text("Data gagal diupdate"),
           duration: Duration(milliseconds: 850),
         ),
       );
@@ -139,7 +139,7 @@ class Edit extends StatelessWidget {
                     price.text,
                   );
                 },
-                child: Text("Add data"),
+                child: Text("Update data"),
               ),
             ],
           ),

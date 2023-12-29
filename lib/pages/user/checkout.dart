@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:e_mart_fe/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -157,11 +158,28 @@ class _CheckoutPageState extends State<CheckoutPage> {
               child: OutlinedButton(
                 onPressed: () {
                   // print(arguments);
-                  transaction(
-                    context,
-                    arguments['userId'].toString(),
-                    arguments['name'].toString(),
-                    qty,
+                  // transaction(
+                  //   context,
+                  //   arguments['userId'].toString(),
+                  //   arguments['name'].toString(),
+                  //   qty,
+                  // );
+                  showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: Text('Berhasil melakukan transaksi'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushReplacementNamed(HomePage.routeName);
+                            },
+                            child: Text('oke'),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
                 child: Text(
